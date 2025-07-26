@@ -88,9 +88,9 @@ annotate service.Candidate with @(
     UI.Facets : [
         {
             $Type : 'UI.ReferenceFacet',
-            Label : 'Resume',
-            ID : 'Resume',
-            Target : '@UI.FieldGroup#Resume',
+            Label : 'Upload Resume',
+            ID : 'UploadResume',
+            Target : '@UI.FieldGroup#UploadResume1',
         },
         {
             $Type : 'UI.ReferenceFacet',
@@ -152,16 +152,12 @@ annotate service.Candidate with @(
         },
     ],
     UI.HeaderInfo : {
-        Title : {
-            $Type : 'UI.DataField',
-            Value : firstName,
-        },
         TypeName : '',
         TypeNamePlural : '',
         Initials : firstName,
         Description : {
             $Type : 'UI.DataField',
-            Value : candidateNumber,
+            Value : 'Candidate Details',
         },
         TypeImageUrl : 'sap-icon://person-placeholder',
     },
@@ -180,15 +176,25 @@ annotate service.Candidate with @(
         Data : [
             {
                 $Type : 'UI.DataField',
-                Value : resume.file,
-                Label : 'file',
+                Value : resume.resume,
+                Label : 'resume',
             },
         ],
     },
     UI.SelectionFields : [
-        availabilityDate,
+        source,
         status,
     ],
+    UI.FieldGroup #UploadResume1 : {
+        $Type : 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type : 'UI.DataField',
+                Value : resume,
+                Label : 'Resume(PDF)',
+            },
+        ],
+    },
 );
 
 annotate service.CandidateEducation with @(
@@ -300,10 +306,6 @@ annotate service.CandidateInsideWorkExperience with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : department,
-        },
-        {
-            $Type : 'UI.DataField',
             Value : startDate,
         },
         {
@@ -312,19 +314,35 @@ annotate service.CandidateInsideWorkExperience with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : performanceRating,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : position,
-        },
-        {
-            $Type : 'UI.DataField',
             Value : responsibilities,
         },
         {
             $Type : 'UI.DataField',
-            Value : supervisor,
+            Value : company,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : achievements,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : currency_code,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : isCurrent,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : jobTitle,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : salary,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : reasonForLeaving,
         },
     ]
 );
@@ -408,31 +426,109 @@ annotate service.CandidateLanguage with @(
 annotate service.Candidate with {
     availabilityDate @(
         Common.Label : '{i18n>AvailabilityDate}',
-        Common.ValueList : {
-            $Type : 'Common.ValueListType',
-            CollectionPath : 'Candidate',
-            Parameters : [
-                {
-                    $Type : 'Common.ValueListParameterInOut',
-                    LocalDataProperty : availabilityDate,
-                    ValueListProperty : 'availabilityDate',
-                },
-            ],
-        },
-        Common.ValueListWithFixedValues : true,
-    )
+        )
 };
 
 annotate service.Candidate with {
     status @(
         Common.ValueList : {
-            $Type : 'Common.ValueListType',
-            CollectionPath : 'Candidate',
+            CollectionPath : 'CandidateStatusOptions',
             Parameters : [
                 {
                     $Type : 'Common.ValueListParameterInOut',
                     LocalDataProperty : status,
-                    ValueListProperty : 'status',
+                    ValueListProperty : 'title',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues : true,
+)};
+
+annotate service.Candidate with {
+    source @(
+        Common.ValueList : {
+            CollectionPath : 'CandidateSourceOptions',
+            Parameters : [
+                {
+                    $Type : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : source,
+                    ValueListProperty : 'title',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues : true,
+)};
+
+annotate service.CandidateLanguage with {
+    listeningLevel @(
+        Common.ValueListWithFixedValues : true,
+        Common.ValueList : {
+            CollectionPath : 'ProficiencyLevelOptions',
+            Parameters : [
+                {
+                    $Type : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : listeningLevel,
+                    ValueListProperty : 'title',
+                },
+            ],
+        },
+    )
+};
+
+annotate service.CandidateLanguage with {
+    proficiencyLevel @(
+        Common.ValueList : {
+            CollectionPath : 'ProficiencyLevelOptions',
+            Parameters : [
+                {
+                    $Type : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : proficiencyLevel,
+                    ValueListProperty : 'title',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues : true,
+)};
+
+annotate service.CandidateLanguage with {
+    readingLevel @(
+        Common.ValueList : {
+            CollectionPath : 'ProficiencyLevelOptions',
+            Parameters : [
+                {
+                    $Type : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : readingLevel,
+                    ValueListProperty : 'title',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues : true,
+)};
+
+annotate service.CandidateLanguage with {
+    writingLevel @(
+        Common.ValueList : {
+            CollectionPath : 'ProficiencyLevelOptions',
+            Parameters : [
+                {
+                    $Type : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : writingLevel,
+                    ValueListProperty : 'title',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues : true,
+)};
+
+annotate service.CandidateLanguage with {
+    speakingLevel @(
+        Common.ValueList : {
+            CollectionPath : 'ProficiencyLevelOptions',
+            Parameters : [
+                {
+                    $Type : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : speakingLevel,
+                    ValueListProperty : 'title',
                 },
             ],
         },

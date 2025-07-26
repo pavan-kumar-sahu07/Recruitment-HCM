@@ -1,0 +1,25 @@
+<core:FragmentDefinition 
+  xmlns:core="sap.ui.core" 
+  xmlns="sap.m" 
+  xmlns:unified="sap.ui.unified"
+  xmlns:macros="sap.fe.macros">
+
+  <VBox id="_IDGenVBox" core:require="{ handler: 'candidate/ext/fragment/Candidateresume'}">
+    <items>
+      <Label id="_IDGenLabel1" text="Upload Resume"/>
+      
+      <unified:FileUploader
+        id="resumeUploader"
+        uploadUrl="/odata/v4/CandidateService/Resume"
+        name="file"
+        uploadOnChange="false"
+        change="handler.onFileChange"
+        width="100%"
+        fileType="pdf,doc,docx"
+        maximumFileSize="10000" />
+      
+      <Button id="_IDGenButton" text="Upload" press="handler.onUploadPress"/>
+      <!-- <Button id="_IDGenButton1" text="Candidateresume" press="handler.onPress" /> -->
+    </items>
+  </VBox>
+</core:FragmentDefinition>

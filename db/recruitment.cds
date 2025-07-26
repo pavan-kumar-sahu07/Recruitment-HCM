@@ -6,7 +6,8 @@ using {
     Language,
     User,
     managed,
-    temporal
+    temporal,
+    sap.common.CodeList
 } from '@sap/cds/common';
 
 
@@ -14,35 +15,124 @@ using {
  * Job Requisition - Represents job openings and requirements
  */
 
+
+entity JobEmploymentTypeOptions : CodeList {
+    key code  : String(50);
+        title : String(100);
+}
+
+
+entity JobExperienceLevel : CodeList {
+    key code  : String(50);
+        title : String(100);
+}
+
+
+entity JobUrgencyLevel : CodeList {
+    key code  : String(50);
+        title : String(100);
+}
+
+
+entity JobStatusOptions : CodeList {
+    key code  : String(50);
+        title : String(100);
+}
+
+
 @odata.draft.enabled
 entity JobRequisition : managed {
     key ID                      : UUID;
-       @readonly
-       requisitionNumber       : String(20)     @title: 'Requisition Number';
+
+        @readonly
+        requisitionNumber       : String(20)     @title: 'Requisition Number';
 
         @mandatory
         jobTitle                : String(255)    @title: 'Job Title';
 
         @mandatory
         jobDescription          : LargeString    @title: 'Job Description';
-        
+
         @mandatory
         department              : String(100)    @title: 'Department';
 
         @mandatory
         location                : String(100)    @title: 'Location';
 
-        @mandatory
-        employmentType          : String(50)     @title: 'Employment Type'; // Full-time, Part-time, Contract
 
+        @Common.ValueList: {
+            CollectionPath: 'JobEmploymentTypeOptions',
+            Parameters    : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: 'employmentType',
+                    ValueListProperty: 'code'
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'title'
+                }
+            ]
+        }
         @mandatory
-        experienceLevel         : String(50)     @title: 'Experience Level'; // Entry, Mid, Senior
+        employmentType          : String(50)     @title: 'Employment Type';
+
+        @Common.ValueList: {
+            CollectionPath: 'JobExperienceLevel',
+            Parameters    : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: 'experienceLevel',
+                    ValueListProperty: 'code'
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'title'
+                }
+            ]
+        }
+        @mandatory
+        experienceLevel         : String(50)     @title: 'Experience Level';
+
         salaryRangeMin          : Decimal(15, 2) @title: 'Minimum Salary';
         salaryRangeMax          : Decimal(15, 2) @title: 'Maximum Salary';
         currency                : Currency       @title: 'Currency';
         numberOfPositions       : Integer        @title: 'Number of Positions';
-        urgency                 : String(20)     @title: 'Urgency'; // Low, Medium, High, Critical
-        status                  : String(20)     @title: 'Status'; // Draft, Open, On Hold, Closed
+
+
+        @Common.ValueList: {
+            CollectionPath: 'JobUrgencyLevel',
+            Parameters    : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: 'urgency',
+                    ValueListProperty: 'code'
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'title'
+                }
+            ]
+        }
+        urgency                 : String(20)     @title: 'Urgency';
+
+
+        @Common.ValueList: {
+            CollectionPath: 'JobStatusOptions',
+            Parameters    : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: 'status',
+                    ValueListProperty: 'code'
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'title'
+                }
+            ]
+        }
+        status                  : String(20)     @title: 'Status';
+
         postingDate             : Date           @title: 'Posting Date';
         applicationDeadline     : Date           @title: 'Application Deadline';
         hiringManager           : String(100)    @title: 'Hiring Manager';
@@ -50,17 +140,31 @@ entity JobRequisition : managed {
         requiredSkills          : LargeString    @title: 'Required Skills';
         preferredQualifications : LargeString    @title: 'Preferred Qualifications';
 
-        // Associations
+
         applications            : Composition of many JobApplication
                                       on applications.jobRequisition = $self;
 }
+
 
 /**
  * Candidate - Core candidate information
  */
 
+
+entity CandidateStatusOptions : CodeList {
+    key code  : String(10);
+        title : String(100);
+
+}
+
+entity CandidateSourceOptions : CodeList {
+    key code  : String(10);
+        title : String(100);
+}
+
 entity Candidate : managed {
     key ID                    : UUID;
+
         @readonly
         candidateNumber       : String(20)     @title: 'Candidate Number';
 
@@ -77,10 +181,12 @@ entity Candidate : managed {
         email                 : String(255)    @title: 'Email Address';
 
         @mandatory
-        @assert.pattern: '^\\+?[0-9]{10,15}$'
+        @assert.pattern  : '^\\+?[0-9]{10,15}$'
         phone                 : String(20)     @title: 'Phone Number';
+
         @mandatory
         alternatePhone        : String(20)     @title: 'Alternate Phone';
+
         @mandatory
         dateOfBirth           : Date           @title: 'Date of Birth';
         nationality           : Country        @title: 'Nationality';
@@ -92,11 +198,44 @@ entity Candidate : managed {
         currency              : Currency       @title: 'Currency';
         noticePeriod          : Integer        @title: 'Notice Period (Days)';
         availabilityDate      : Date           @title: 'Availability Date';
-        source                : String(100)    @title: 'Source'; // Job Board, Referral, Direct, etc.
-        status                : String(20)     @title: 'Status'; // Active, Inactive, Hired, Rejected
 
 
-       resume: Composition of one Resume on resume.candidate = $self;
+        @title           : 'Source'
+        @Common.ValueList: {
+            CollectionPath: 'CandidateSourceOptions',
+            Parameters    : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: 'source',
+                    ValueListProperty: 'code'
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'title'
+                }
+            ]
+        }
+        source                : String(100); // Job Board, Referral, Direct, etc.
+
+        @title           : 'Status'
+        @Common.ValueList: {
+            CollectionPath: 'CandidateStatusOptions',
+            Parameters    : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: 'status',
+                    ValueListProperty: 'code'
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'title'
+                }
+            ]
+        }
+        status                : String(20);
+
+        @Core.MediaType: 'application/pdf'
+        resume                : LargeBinary;
         // Associations
         applications          : Composition of many JobApplication
                                     on applications.candidate = $self;
@@ -119,34 +258,34 @@ entity Candidate : managed {
                                     on profileExtensions.candidate = $self;
 }
 
-entity Resume {
-  key ID           : UUID;
-
-  candidate        : Association to Candidate;
-
-  @Core.MediaType: 'mimeType'
-  @Core.ContentDisposition.Filename: 'fileName'
-  @Core.ContentDisposition.Type: 'inline'
-  file             : LargeBinary;
-
-  fileName         : String;
-
-  mimeType         : String;
-}
 
 /**
  * Candidate Education Details
  */
 entity CandidateEducation : managed {
     key ID           : UUID;
-        // candidateBackground            : Association to CandidateBackground;
+
         candidate    : Association to Candidate;
+
+        @mandatory
         institution  : String(255)   @title: 'Institution';
+
+        @mandatory
         degree       : String(100)   @title: 'Degree';
+
+        @mandatory
         fieldOfStudy : String(100)   @title: 'Field of Study';
+
+        @mandatory
         startDate    : Date          @title: 'Start Date';
+
+        @mandatory
         endDate      : Date          @title: 'End Date';
+
+        @mandatory
         gpa          : Decimal(3, 2) @title: 'GPA';
+
+        @mandatory
         maxGpa       : Decimal(3, 2) @title: 'Max GPA';
         honors       : String(255)   @title: 'Honors/Awards';
         activities   : LargeString   @title: 'Activities';
@@ -158,16 +297,28 @@ entity CandidateEducation : managed {
  */
 entity CandidateOutsideWorkExperience : managed {
     key ID               : UUID;
-        // candidateBackground            : Association to CandidateBackground;
+
         candidate        : Association to Candidate;
+
+        @mandatory
         company          : String(255)    @title: 'Company';
+
+        @mandatory
         jobTitle         : String(255)    @title: 'Job Title';
+
+        @mandatory
         startDate        : Date           @title: 'Start Date';
+
         endDate          : Date           @title: 'End Date';
+
         isCurrent        : Boolean        @title: 'Current Position';
+
+        @mandatory
         responsibilities : LargeString    @title: 'Responsibilities';
         achievements     : LargeString    @title: 'Achievements';
         reasonForLeaving : String(255)    @title: 'Reason for Leaving';
+
+        @mandatory
         salary           : Decimal(15, 2) @title: 'Salary';
         currency         : Currency       @title: 'Currency';
 }
@@ -176,16 +327,31 @@ entity CandidateOutsideWorkExperience : managed {
  * Candidate Inside Work Experience (within the organization)
  */
 entity CandidateInsideWorkExperience : managed {
-    key ID                : UUID;
-        // candidateBackground            : Association to CandidateBackground;
-        candidate         : Association to Candidate;
-        department        : String(100) @title: 'Department';
-        position          : String(255) @title: 'Position';
-        startDate         : Date        @title: 'Start Date';
-        endDate           : Date        @title: 'End Date';
-        supervisor        : String(100) @title: 'Supervisor';
-        responsibilities  : LargeString @title: 'Responsibilities';
-        performanceRating : String(20)  @title: 'Performance Rating';
+    key ID               : UUID;
+
+        candidate        : Association to Candidate;
+
+        @mandatory
+        company          : String(255)    @title: 'Company';
+
+        @mandatory
+        jobTitle         : String(255)    @title: 'Job Title';
+
+        @mandatory
+        startDate        : Date           @title: 'Start Date';
+
+        endDate          : Date           @title: 'End Date';
+
+        isCurrent        : Boolean        @title: 'Current Position';
+
+        @mandatory
+        responsibilities : LargeString    @title: 'Responsibilities';
+        achievements     : LargeString    @title: 'Achievements';
+        reasonForLeaving : String(255)    @title: 'Reason for Leaving';
+
+        @mandatory
+        salary           : Decimal(15, 2) @title: 'Salary';
+        currency         : Currency       @title: 'Currency';
 }
 
 /**
@@ -193,11 +359,19 @@ entity CandidateInsideWorkExperience : managed {
  */
 entity CandidateCertificate : managed {
     key ID                  : UUID;
-        // candidateBackground            : Association to CandidateBackground;
+
         candidate           : Association to Candidate;
+
+        @mandatory
         certificateName     : String(255) @title: 'Certificate Name';
+
+        @mandatory
         issuingOrganization : String(255) @title: 'Issuing Organization';
+
+        @mandatory
         issueDate           : Date        @title: 'Issue Date';
+
+        @mandatory
         expirationDate      : Date        @title: 'Expiration Date';
         credentialID        : String(100) @title: 'Credential ID';
         credentialURL       : String(500) @title: 'Credential URL';
@@ -207,31 +381,179 @@ entity CandidateCertificate : managed {
 /**
  * Candidate Language Skills
  */
+
+
+entity ProficiencyLevelOptions : CodeList {
+    key code  : String(20);
+        title : String(100);
+}
+
 entity CandidateLanguage : managed {
     key ID               : UUID;
-        // candidateBackground            : Association to CandidateBackground;
         candidate        : Association to Candidate;
         language         : Language   @title: 'Language';
-        proficiencyLevel : String(20) @title: 'Proficiency Level'; // Beginner, Intermediate, Advanced, Native
+
+        @Common.ValueList: {
+            CollectionPath: 'ProficiencyLevelOptions',
+            Parameters    : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: 'proficiencyLevel',
+                    ValueListProperty: 'code'
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'title'
+                }
+            ]
+        }
+        proficiencyLevel : String(20) @title: 'Proficiency Level';
+
+        @Common.ValueList: {
+            CollectionPath: 'ProficiencyLevelOptions',
+            Parameters    : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: 'readingLevel',
+                    ValueListProperty: 'code'
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'title'
+                }
+            ]
+        }
         readingLevel     : String(20) @title: 'Reading Level';
+
+        @Common.ValueList: {
+            CollectionPath: 'ProficiencyLevelOptions',
+            Parameters    : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: 'writingLevel',
+                    ValueListProperty: 'code'
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'title'
+                }
+            ]
+        }
         writingLevel     : String(20) @title: 'Writing Level';
+
+        @Common.ValueList: {
+            CollectionPath: 'ProficiencyLevelOptions',
+            Parameters    : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: 'speakingLevel',
+                    ValueListProperty: 'code'
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'title'
+                }
+            ]
+        }
         speakingLevel    : String(20) @title: 'Speaking Level';
+
+        @Common.ValueList: {
+            CollectionPath: 'ProficiencyLevelOptions',
+            Parameters    : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: 'listeningLevel',
+                    ValueListProperty: 'code'
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'title'
+                }
+            ]
+        }
         listeningLevel   : String(20) @title: 'Listening Level';
+
         isNative         : Boolean    @title: 'Native Language';
 }
 
 /**
  * Job Application - Links candidates to job requisitions
  */
+
+entity ApplicationStatusOptions : CodeList {
+
+    key code  : String;
+        title : String;
+}
+
 entity JobApplication : managed {
     key ID                : UUID;
+
+        @readonly
         applicationNumber : String(20)    @title: 'Application Number';
+
+        @Common.ValueList: {
+            CollectionPath: 'Candidate',
+            Parameters    : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: 'candidate_ID',
+                    ValueListProperty: 'ID'
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'firstName'
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'lastName'
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'email'
+                }
+            ]
+        }
         candidate         : Association to Candidate;
+
+        // candidate         : Association to Candidate;
         jobRequisition    : Association to JobRequisition;
         applicationDate   : Date          @title: 'Application Date';
-        status            : String(20)    @title: 'Status'; // Submitted, Under Review, Interview, Offer, Hired, Rejected
+
+        @Common.ValueList: {
+            CollectionPath: 'ProficiencyLevelOptions',
+            Parameters    : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: 'status',
+                    ValueListProperty: 'code'
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'title'
+                }
+            ]
+        }
+        status            : String(20)    @title: 'Status';
+
+        @Common.ValueList: {
+            CollectionPath: 'CandidateSourceOptions',
+            Parameters    : [
+                {
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: 'source',
+                    ValueListProperty: 'code'
+                },
+                {
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'title'
+                }
+            ]
+        }
         source            : String(100)   @title: 'Application Source';
-        coverLetter       : LargeString   @title: 'Cover Letter';
+
+        //source            : String(100)   @title: 'Application Source';
+        coverLetter       : LargeString   @title: 'Cover Letter URL';
         resumeURL         : String(500)   @title: 'Resume URL';
         portfolioURL      : String(500)   @title: 'Portfolio URL';
         referredBy        : String(100)   @title: 'Referred By';
@@ -262,10 +584,10 @@ entity JobApplicationInterview : managed {
         meetingLink            : String(500)   @title: 'Meeting Link';
         interviewer            : String(100)   @title: 'Primary Interviewer';
         additionalInterviewers : String(500)   @title: 'Additional Interviewers';
-        status                 : String(20)    @title: 'Status'; // Scheduled, Completed, Cancelled, No Show
+        status                 : String(20)    @title: 'Status';
         feedback               : LargeString   @title: 'Interview Feedback';
         rating                 : Decimal(3, 2) @title: 'Interview Rating';
-        recommendation         : String(20)    @title: 'Recommendation'; // Hire, No Hire, Maybe
+        recommendation         : String(20)    @title: 'Recommendation';
         notes                  : LargeString   @title: 'Additional Notes';
 }
 
@@ -278,7 +600,7 @@ entity JobOffer : managed {
         jobApplication   : Association to JobApplication;
         offerDate        : Date           @title: 'Offer Date';
         expirationDate   : Date           @title: 'Expiration Date';
-        status           : String(20)     @title: 'Status'; // Draft, Extended, Accepted, Rejected, Withdrawn
+        status           : String(20)     @title: 'Status';
         jobTitle         : String(255)    @title: 'Job Title';
         department       : String(100)    @title: 'Department';
         startDate        : Date           @title: 'Start Date';
@@ -287,7 +609,7 @@ entity JobOffer : managed {
         bonus            : Decimal(15, 2) @title: 'Bonus';
         benefits         : LargeString    @title: 'Benefits Package';
         workLocation     : String(255)    @title: 'Work Location';
-        workArrangement  : String(50)     @title: 'Work Arrangement'; // On-site, Remote, Hybrid
+        workArrangement  : String(50)     @title: 'Work Arrangement';
         reportingManager : String(100)    @title: 'Reporting Manager';
         offerLetter      : LargeString    @title: 'Offer Letter Content';
         terms            : LargeString    @title: 'Terms and Conditions';
@@ -302,7 +624,7 @@ entity JobApplicationSnapshot : managed {
     key ID             : UUID;
         jobApplication : Association to JobApplication;
         snapshotDate   : DateTime   @title: 'Snapshot Date';
-        snapshotType   : String(50) @title: 'Snapshot Type'; // Application, Interview, Offer
+        snapshotType   : String(50) @title: 'Snapshot Type';
 
         // Snapshot of candidate data at time of application
         education      : Composition of many JobApplicationSnapshotEducation
@@ -336,9 +658,6 @@ entity JobApplicationSnapshotCertificate : managed {
         expirationDate      : Date        @title: 'Expiration Date';
 }
 
-// ============================================================================
-// SUPPORTING ENTITIES
-// ============================================================================
 
 /**
  * Candidate Comments and Notes
@@ -361,7 +680,7 @@ entity CandidateTag : managed {
     key ID          : UUID;
         candidate   : Association to Candidate;
         tagName     : String(100) @title: 'Tag Name';
-        tagCategory : String(50)  @title: 'Tag Category'; // Skill, Experience, Source, etc.
+        tagCategory : String(50)  @title: 'Tag Category';
         tagValue    : String(255) @title: 'Tag Value';
         addedBy     : User        @title: 'Added By';
         addedDate   : DateTime    @title: 'Added Date';
@@ -374,7 +693,7 @@ entity CandidateProfileExtension : managed {
     key ID            : UUID;
         candidate     : Association to Candidate;
         fieldName     : String(100) @title: 'Field Name';
-        fieldType     : String(20)  @title: 'Field Type'; // Text, Number, Date, Boolean
+        fieldType     : String(20)  @title: 'Field Type';
         fieldValue    : String(500) @title: 'Field Value';
         fieldCategory : String(50)  @title: 'Field Category';
         isRequired    : Boolean     @title: 'Required Field';

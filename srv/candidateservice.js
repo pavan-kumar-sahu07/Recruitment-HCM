@@ -1,24 +1,30 @@
 import cds from '@sap/cds';
-
+import { validateCandidateData } from './handlers/candidateValidation.js';
+import { validateEducationData } from './handlers/educationValidation.js';
+import { generateCandidateNumber } from './handlers/candidateNumberGenerator.js';
+import { validateCandidateOutsideExperience } from './handlers/outsideworkexprienceValidation.js';
+import { validateCandidateInsideExperience } from './handlers/insideexpValidation.js'
 export default (srv) => {
   const { Candidate } = srv.entities;
 
-  srv.before('CREATE', Candidate, async (req) => {
-    const db = cds.transaction(req);
+  srv.before("CREATE", Candidate, async (req) => {
+    const c = req.data;
 
-    const result = await db.run(
-      SELECT.one.from(Candidate)
-        .columns('candidateNumber')
-        .orderBy({ candidateNumber: 'desc' })
-    );
+    
+    req.data.candidateNumber = await generateCandidateNumber(Candidate, req);
+    validateCandidateData(c, req);
+    validateEducationData(c.education, req);
+    validateCandidateOutsideExperience(c.workExperienceOutside,req);
+    validateCandidateInsideExperience(c.workExperienceInside,req);
 
-    let max = 0;
-    if (result?.candidateNumber) {
-      const parts = result.candidateNumber.split('-');
-      max = parseInt(parts[1]) || 0;
-    }
+  });
 
-    const newNumber = max + 1;
-    req.data.candidateNumber = `CAND-${newNumber}`;
+  srv.before("UPDATE", Candidate, async (req) => {
+    const c = req.data;
+
+    validateCandidateData(c, req);
+    validateEducationData(c.education, req);
+    validateCandidateOutsideExperience(c.workExperienceOutside,req);
+    validateCandidateInsideExperience(c.workExperienceInside,req);
   });
 };

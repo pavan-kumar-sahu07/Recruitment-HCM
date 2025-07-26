@@ -1,0 +1,2 @@
+sap.ui.define(["sap/ui/model/Filter","sap/ui/model/FilterOperator"],function(e,t){"use strict";return{filterItems:function(r){if(!r)return null;return new e({path:"status",operator:t.EQ,value1:r})}}});
+//# sourceMappingURL=Statusfilter.js.map

@@ -53,11 +53,7 @@ annotate RequisitionService.JobRequisition with @(
         Data : [
             {
                 $Type : 'UI.DataField',
-                Value : applicationDeadline,
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : currency_code,
+                Value : jobTitle,
             },
             {
                 $Type : 'UI.DataField',
@@ -73,6 +69,14 @@ annotate RequisitionService.JobRequisition with @(
             },
             {
                 $Type : 'UI.DataField',
+                Value : applicationDeadline,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : location,
+            },
+            {
+                $Type : 'UI.DataField',
                 Value : hiringManager,
             },
             {
@@ -81,15 +85,11 @@ annotate RequisitionService.JobRequisition with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : jobTitle,
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : location,
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : numberOfPositions,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : currency_code,
             },
             {
                 $Type : 'UI.DataField',
@@ -113,10 +113,6 @@ annotate RequisitionService.JobRequisition with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : requisitionNumber,
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : salaryRangeMin,
             },
             {
@@ -132,27 +128,25 @@ annotate RequisitionService.JobRequisition with @(
     UI.HeaderInfo : {
         TypeNamePlural : 'Total Jobs',
         TypeName : '',
-        Title : {
-            $Type : 'UI.DataField',
-            Value : employmentType,
-        },
-        Description : {
-            $Type : 'UI.DataField',
-            Value : applicationDeadline,
-        },
         TypeImageUrl : 'sap-icon://business-card',
     },
+    UI.SelectionFields : [
+        employmentType,
+        experienceLevel,
+        status,
+        urgency,
+    ],
 );
 
 annotate RequisitionService.JobApplication with @(
     UI.LineItem #JobApplications : [
         {
             $Type : 'UI.DataField',
-            Value : applicationDate,
+            Value : applicationNumber,
         },
         {
             $Type : 'UI.DataField',
-            Value : applicationNumber,
+            Value : applicationDate,
         },
         {
             $Type : 'UI.DataField',
@@ -223,10 +217,6 @@ annotate RequisitionService.JobApplication with @(
             {
                 $Type : 'UI.DataField',
                 Value : applicationDate,
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : applicationNumber,
             },
             {
                 $Type : 'UI.DataField',
@@ -421,4 +411,95 @@ annotate RequisitionService.JobOffer with @(
         },
     ]
 );
+
+annotate RequisitionService.JobRequisition with {
+    employmentType @(
+        Common.ValueList : {
+            CollectionPath : 'JobEmploymentTypeOptions',
+            Parameters : [
+                {
+                    $Type : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : employmentType,
+                    ValueListProperty : 'code',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues : true,
+)};
+
+annotate RequisitionService.JobRequisition with {
+    experienceLevel @(
+        Common.ValueList : {
+            $Type : 'Common.ValueListType',
+            CollectionPath : 'JobExperienceLevel',
+            Parameters : [
+                {
+                    $Type : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : experienceLevel,
+                    ValueListProperty : 'title',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues : true,
+)};
+
+annotate RequisitionService.JobRequisition with {
+    urgency @(
+        Common.ValueList : {
+            CollectionPath : 'JobUrgencyLevel',
+            Parameters : [
+                {
+                    $Type : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : urgency,
+                    ValueListProperty : 'title',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues : true,
+)};
+
+annotate RequisitionService.JobRequisition with {
+    status @(
+        Common.ValueList : {
+            CollectionPath : 'JobStatusOptions',
+            Parameters : [
+                {
+                    $Type : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : status,
+                    ValueListProperty : 'title',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues : true,
+)};
+
+annotate RequisitionService.JobApplication with {
+    status @(
+        Common.ValueList : {
+            CollectionPath : 'ApplicationStatusOptions',
+            Parameters : [
+                {
+                    $Type : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : status,
+                    ValueListProperty : 'title',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues : true,
+)};
+
+annotate RequisitionService.JobApplication with {
+    source @(
+        Common.ValueList : {
+            CollectionPath : 'CandidateSourceOptions',
+            Parameters : [
+                {
+                    $Type : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : source,
+                    ValueListProperty : 'title',
+                },
+            ],
+        },
+        Common.ValueListWithFixedValues : true,
+)};
 
