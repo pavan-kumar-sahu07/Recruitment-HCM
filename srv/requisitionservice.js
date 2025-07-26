@@ -1,7 +1,9 @@
 import {validateJobRequisitionData} from './jobrequisitionhandlers/jobrequistionDataValidation.js';
 import { validateJobApplicationData } from './jobrequisitionhandlers/jobapplicationValidations.js';
 import {generateJobApplicationNumber} from './jobrequisitionhandlers/generateJobApplicationNumber.js';
+import {generateIntervireNumber} from './jobrequisitionhandlers/generateJobinterviewsNumber.js';
 import  triggerBpa  from './externalApis/bpatrigger.js'
+import {generateJobOfferNumber} from './jobrequisitionhandlers/generateJobOfferNumber.js'
 import cds from '@sap/cds';
 
 
@@ -29,10 +31,22 @@ export default (srv) => {
     validateJobRequisitionData(jobRequisitionData, req);
 
     //Sending Data To BPA
-    triggerBpa(jobRequisitionData);
+    // triggerBpa(jobRequisitionData);
     // job Application Validation 
 
-    generateJobApplicationNumber(jobRequisitionData.applications,req);
+
+    //Job Application
+    for(jobapplication of jobRequisitionData.applications){
+      validateJobApplicationData(jobapplication,req);
+      generateJobApplicationNumber(jobapplication,req);
+    }
+    //Job Offers
+    for(let application of jobRequisitionData.applications){
+      
+        for(let offersData of application.offers){
+          generateJobOfferNumber(offersData,req);
+      }
+    }
 
 
 
@@ -48,8 +62,30 @@ export default (srv) => {
     validateJobRequisitionData(jobRequisitionData,req);
 
     // job Application Validations 
+    for(let jobapplication of jobRequisitionData.applications){
+       validateJobApplicationData(jobapplication,req);
+       generateJobApplicationNumber(jobapplication,req);
+      }
 
-    validateJobApplicationData(jobRequisitionData.applications,req);
-    generateJobApplicationNumber(jobRequisitionData.applications,req);
+      //job interview Validation
+
+      for(let application of jobRequisitionData.applications){
+          if(application.interviews){
+            for(let interview of application.interviews){
+             generateIntervireNumber(interview,req);
+            }
+          }
+      }
+
+      //JOB OFFER VALIDATIONS
+
+      for(let application of jobRequisitionData.applications){
+        if(application.offers){
+          for(let offersData of application.offers){
+           generateIntervireNumber(offersData,req);
+          }
+        }
+      }
+  
   });
 };

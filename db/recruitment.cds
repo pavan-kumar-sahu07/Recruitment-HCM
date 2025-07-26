@@ -93,10 +93,12 @@ entity JobRequisition : managed {
         }
         @mandatory
         experienceLevel         : String(50)     @title: 'Experience Level';
-
+         @mandatory
         salaryRangeMin          : Decimal(15, 2) @title: 'Minimum Salary';
+         @mandatory
         salaryRangeMax          : Decimal(15, 2) @title: 'Maximum Salary';
         currency                : Currency       @title: 'Currency';
+         @mandatory
         numberOfPositions       : Integer        @title: 'Number of Positions';
 
 
@@ -114,6 +116,7 @@ entity JobRequisition : managed {
                 }
             ]
         }
+         @mandatory
         urgency                 : String(20)     @title: 'Urgency';
 
 
@@ -131,9 +134,11 @@ entity JobRequisition : managed {
                 }
             ]
         }
+         @mandatory
         status                  : String(20)     @title: 'Status';
-
+         @mandatory
         postingDate             : Date           @title: 'Posting Date';
+         @mandatory
         applicationDeadline     : Date           @title: 'Application Deadline';
         hiringManager           : String(100)    @title: 'Hiring Manager';
         recruiter               : String(100)    @title: 'Recruiter';
@@ -190,13 +195,18 @@ entity Candidate : managed {
         @mandatory
         dateOfBirth           : Date           @title: 'Date of Birth';
         nationality           : Country        @title: 'Nationality';
+         @mandatory
         currentLocation       : String(100)    @title: 'Current Location';
         willingToRelocate     : Boolean        @title: 'Willing to Relocate';
+         @mandatory
         preferredLocation     : String(100)    @title: 'Preferred Location';
         currentSalary         : Decimal(15, 2) @title: 'Current Salary';
+         @mandatory
         expectedSalary        : Decimal(15, 2) @title: 'Expected Salary';
         currency              : Currency       @title: 'Currency';
+         @mandatory
         noticePeriod          : Integer        @title: 'Notice Period (Days)';
+         @mandatory
         availabilityDate      : Date           @title: 'Availability Date';
 
 
@@ -254,8 +264,7 @@ entity Candidate : managed {
                                     on comments.candidate = $self;
         tags                  : Composition of many CandidateTag
                                     on tags.candidate = $self;
-        profileExtensions     : Composition of many CandidateProfileExtension
-                                    on profileExtensions.candidate = $self;
+       
 }
 
 
@@ -391,6 +400,7 @@ entity ProficiencyLevelOptions : CodeList {
 entity CandidateLanguage : managed {
     key ID               : UUID;
         candidate        : Association to Candidate;
+         @mandatory
         language         : Language   @title: 'Language';
 
         @Common.ValueList: {
@@ -488,7 +498,6 @@ entity ApplicationStatusOptions : CodeList {
 
 entity JobApplication : managed {
     key ID                : UUID;
-
         @readonly
         applicationNumber : String(20)    @title: 'Application Number';
 
@@ -516,7 +525,8 @@ entity JobApplication : managed {
         }
         candidate         : Association to Candidate;
 
-        // candidate         : Association to Candidate;
+        
+         @mandatory
         jobRequisition    : Association to JobRequisition;
         applicationDate   : Date          @title: 'Application Date';
 
@@ -550,14 +560,12 @@ entity JobApplication : managed {
                 }
             ]
         }
+         @mandatory
         source            : String(100)   @title: 'Application Source';
-
-        //source            : String(100)   @title: 'Application Source';
         coverLetter       : LargeString   @title: 'Cover Letter URL';
         resumeURL         : String(500)   @title: 'Resume URL';
         portfolioURL      : String(500)   @title: 'Portfolio URL';
         referredBy        : String(100)   @title: 'Referred By';
-        currentStage      : String(50)    @title: 'Current Stage';
         overallRating     : Decimal(3, 2) @title: 'Overall Rating';
 
         // Associations
@@ -574,20 +582,22 @@ entity JobApplication : managed {
  */
 entity JobApplicationInterview : managed {
     key ID                     : UUID;
+        jobInterviewNumber      : String(20)     @title: 'Offer Number';
         jobApplication         : Association to JobApplication;
+         @mandatory
         interviewType          : String(50)    @title: 'Interview Type'; // Phone, Video, In-Person, Panel
+         @mandatory
         interviewRound         : Integer       @title: 'Interview Round';
+         @mandatory
         scheduledDate          : DateTime      @title: 'Scheduled Date';
-        actualDate             : DateTime      @title: 'Actual Date';
+         @mandatory
         duration               : Integer       @title: 'Duration (Minutes)';
         location               : String(255)   @title: 'Location';
         meetingLink            : String(500)   @title: 'Meeting Link';
         interviewer            : String(100)   @title: 'Primary Interviewer';
-        additionalInterviewers : String(500)   @title: 'Additional Interviewers';
         status                 : String(20)    @title: 'Status';
         feedback               : LargeString   @title: 'Interview Feedback';
         rating                 : Decimal(3, 2) @title: 'Interview Rating';
-        recommendation         : String(20)    @title: 'Recommendation';
         notes                  : LargeString   @title: 'Additional Notes';
 }
 
@@ -598,9 +608,12 @@ entity JobOffer : managed {
     key ID               : UUID;
         offerNumber      : String(20)     @title: 'Offer Number';
         jobApplication   : Association to JobApplication;
+         @mandatory
         offerDate        : Date           @title: 'Offer Date';
+         @mandatory
         expirationDate   : Date           @title: 'Expiration Date';
         status           : String(20)     @title: 'Status';
+         @mandatory
         jobTitle         : String(255)    @title: 'Job Title';
         department       : String(100)    @title: 'Department';
         startDate        : Date           @title: 'Start Date';
@@ -611,9 +624,10 @@ entity JobOffer : managed {
         workLocation     : String(255)    @title: 'Work Location';
         workArrangement  : String(50)     @title: 'Work Arrangement';
         reportingManager : String(100)    @title: 'Reporting Manager';
-        offerLetter      : LargeString    @title: 'Offer Letter Content';
         terms            : LargeString    @title: 'Terms and Conditions';
+         @mandatory
         acceptanceDate   : Date           @title: 'Acceptance Date';
+         @mandatory
         rejectionReason  : String(255)    @title: 'Rejection Reason';
 }
 
@@ -685,94 +699,3 @@ entity CandidateTag : managed {
         addedBy     : User        @title: 'Added By';
         addedDate   : DateTime    @title: 'Added Date';
 }
-
-/**
- * Candidate Profile Extensions for custom fields
- */
-entity CandidateProfileExtension : managed {
-    key ID            : UUID;
-        candidate     : Association to Candidate;
-        fieldName     : String(100) @title: 'Field Name';
-        fieldType     : String(20)  @title: 'Field Type';
-        fieldValue    : String(500) @title: 'Field Value';
-        fieldCategory : String(50)  @title: 'Field Category';
-        isRequired    : Boolean     @title: 'Required Field';
-        displayOrder  : Integer     @title: 'Display Order';
-}
-
-/**
- * Candidate Light - Simplified candidate view for performance
- */
-entity CandidateLight {
-    key ID               : UUID;
-        candidateNumber  : String(20)  @title: 'Candidate Number';
-        fullName         : String(255) @title: 'Full Name';
-        email            : String(255) @title: 'Email';
-        phone            : String(20)  @title: 'Phone';
-        status           : String(20)  @title: 'Status';
-        source           : String(100) @title: 'Source';
-        applicationCount : Integer     @title: 'Application Count';
-        lastActivity     : DateTime    @title: 'Last Activity';
-}
-
-// ============================================================================
-// VIEWS AND PROJECTIONS
-// ============================================================================
-
-/**
- * Active Recruitment Pipeline View
- */
-view ActiveRecruitmentPipeline as
-    select from JobRequisition {
-        ID,
-        requisitionNumber,
-        jobTitle,
-        department,
-        status,
-        numberOfPositions,
-        postingDate,
-        applicationDeadline,
-        hiringManager,
-        recruiter,
-        applications.ID as applicationCount : Integer
-    }
-    where
-        status in (
-            'Open', 'On Hold'
-        );
-
-/**
- * Candidate Application Summary View
- */
-view CandidateApplicationSummary as
-    select from Candidate {
-        ID,
-        candidateNumber,
-        firstName,
-        lastName,
-        email,
-        status,
-        applications.ID                       as totalApplications : Integer,
-        applications[status = 'Interview'].ID as interviewStage    : Integer,
-        applications[status = 'Offer'].ID     as offerStage        : Integer
-    };
-
-/**
- * Interview Schedule View
- */
-view InterviewSchedule as
-    select from JobApplicationInterview {
-        ID,
-        jobApplication.candidate.firstName,
-        jobApplication.candidate.lastName,
-        jobApplication.jobRequisition.jobTitle,
-        interviewType,
-        scheduledDate,
-        interviewer,
-        status,
-        location,
-        meetingLink
-    }
-    where
-            status        =  'Scheduled'
-        and scheduledDate >= $now;

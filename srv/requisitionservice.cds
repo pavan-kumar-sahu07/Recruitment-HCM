@@ -7,9 +7,9 @@ service RequisitionService {
     entity JobExperienceLevel as projection on recruiting.JobExperienceLevel;
     entity JobUrgencyLevel as projection on recruiting.JobUrgencyLevel;
     entity JobStatusOptions as projection on recruiting.JobStatusOptions;
+    entity JobApplication as projection on recruiting.JobApplication;
     //   entity JobApplication as projection on recruiting.JobApplication;
     entity ApplicationStatusOptions as projection on recruiting.ApplicationStatusOptions;
-    entity Candidate as projection on recruiting.Candidate;
     entity CandidateSourceOptions as projection on recruiting.CandidateSourceOptions;
 
 }

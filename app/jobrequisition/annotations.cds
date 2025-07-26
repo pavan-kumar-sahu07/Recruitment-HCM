@@ -229,10 +229,6 @@ annotate RequisitionService.JobApplication with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : currentStage,
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : jobRequisition_ID,
                 Label : 'jobRequisition_ID',
             },
@@ -268,15 +264,12 @@ annotate RequisitionService.JobApplicationInterview with @(
     UI.LineItem #JobInterviews : [
         {
             $Type : 'UI.DataField',
-            Value : actualDate,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : additionalInterviewers,
-        },
-        {
-            $Type : 'UI.DataField',
             Value : duration,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : jobApplication.interviews.jobInterviewNumber,
+            Label : 'Job Interview Number',
         },
         {
             $Type : 'UI.DataField',
@@ -314,10 +307,6 @@ annotate RequisitionService.JobApplicationInterview with @(
         {
             $Type : 'UI.DataField',
             Value : rating,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : recommendation,
         },
         {
             $Type : 'UI.DataField',
@@ -372,10 +361,6 @@ annotate RequisitionService.JobOffer with @(
         {
             $Type : 'UI.DataField',
             Value : offerDate,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : offerLetter,
         },
         {
             $Type : 'UI.DataField',
