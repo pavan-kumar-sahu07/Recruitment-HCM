@@ -264,7 +264,8 @@ entity Candidate : managed {
                                     on comments.candidate = $self;
         tags                  : Composition of many CandidateTag
                                     on tags.candidate = $self;
-       
+        profileExtensions     : Composition of many CandidateProfileExtension
+                                    on profileExtensions.candidate = $self;
 }
 
 
@@ -624,6 +625,7 @@ entity JobOffer : managed {
         workLocation     : String(255)    @title: 'Work Location';
         workArrangement  : String(50)     @title: 'Work Arrangement';
         reportingManager : String(100)    @title: 'Reporting Manager';
+
         terms            : LargeString    @title: 'Terms and Conditions';
          @mandatory
         acceptanceDate   : Date           @title: 'Acceptance Date';
@@ -699,3 +701,94 @@ entity CandidateTag : managed {
         addedBy     : User        @title: 'Added By';
         addedDate   : DateTime    @title: 'Added Date';
 }
+
+/**
+ * Candidate Profile Extensions for custom fields
+ */
+entity CandidateProfileExtension : managed {
+    key ID            : UUID;
+        candidate     : Association to Candidate;
+        fieldName     : String(100) @title: 'Field Name';
+        fieldType     : String(20)  @title: 'Field Type';
+        fieldValue    : String(500) @title: 'Field Value';
+        fieldCategory : String(50)  @title: 'Field Category';
+        isRequired    : Boolean     @title: 'Required Field';
+        displayOrder  : Integer     @title: 'Display Order';
+}
+
+/**
+ * Candidate Light - Simplified candidate view for performance
+ */
+entity CandidateLight {
+    key ID               : UUID;
+        candidateNumber  : String(20)  @title: 'Candidate Number';
+        fullName         : String(255) @title: 'Full Name';
+        email            : String(255) @title: 'Email';
+        phone            : String(20)  @title: 'Phone';
+        status           : String(20)  @title: 'Status';
+        source           : String(100) @title: 'Source';
+        applicationCount : Integer     @title: 'Application Count';
+        lastActivity     : DateTime    @title: 'Last Activity';
+}
+
+// ============================================================================
+// VIEWS AND PROJECTIONS
+// ============================================================================
+
+/**
+ * Active Recruitment Pipeline View
+ */
+view ActiveRecruitmentPipeline as
+    select from JobRequisition {
+        ID,
+        requisitionNumber,
+        jobTitle,
+        department,
+        status,
+        numberOfPositions,
+        postingDate,
+        applicationDeadline,
+        hiringManager,
+        recruiter,
+        applications.ID as applicationCount : Integer
+    }
+    where
+        status in (
+            'Open', 'On Hold'
+        );
+
+/**
+ * Candidate Application Summary View
+ */
+view CandidateApplicationSummary as
+    select from Candidate {
+        ID,
+        candidateNumber,
+        firstName,
+        lastName,
+        email,
+        status,
+        applications.ID                       as totalApplications : Integer,
+        applications[status = 'Interview'].ID as interviewStage    : Integer,
+        applications[status = 'Offer'].ID     as offerStage        : Integer
+    };
+
+/**
+ * Interview Schedule View
+ */
+view InterviewSchedule as
+    select from JobApplicationInterview {
+        ID,
+        jobApplication.candidate.firstName,
+        jobApplication.candidate.lastName,
+        jobApplication.jobRequisition.jobTitle,
+        interviewType,
+        scheduledDate,
+        interviewer,
+        status,
+        location,
+        meetingLink
+    }
+    where
+            status        =  'Scheduled'
+        and scheduledDate >= $now;

@@ -7,10 +7,10 @@ export default async function triggerBpa(jobData) {
 
 
     try {
-        const tokenRes = await axios.post('https://5bd9c330trial.authentication.us10.hana.ondemand.com/oauth/token', null, {
+        const tokenRes = await axios.post('https://44061ef2trial.authentication.us10.hana.ondemand.com/oauth/token', null, {
             params: {
-                client_id: 'sb-61161fc2-24a9-4f0e-9c6c-1a889a6dc03c!b481123|xsuaa!b49390',
-                client_secret: '1a5a4045-f9b7-4290-8dca-c6c874075b7d$vYIhQCKzg7sVW39Qf2HQoui7pF1jSCjQ3T1LVYWyrOo=',
+                client_id: 'sb-8144a7f9-b523-4adf-a766-f19a016f083e!b446630|xsuaa!b49390',
+                client_secret: '9b0e7b07-3a83-4320-af36-4e83d0619ab7$RnZRrhobzwn0imdnu8AwwrUGpdvUCIdfKdoMIikx6EA=',
                 grant_type: 'client_credentials'
             }
         });
@@ -18,30 +18,37 @@ export default async function triggerBpa(jobData) {
         const accessToken = tokenRes.data.access_token;
         console.log("Access Token Is", accessToken);
 
-        const payload = {
-            definitionId: 'us10.5bd9c330trial.jobrequisitionapproval.jobRequisitionHandlingProcess',
-            context: {
-                requisitionNumber: jobData.requisitionNumber,
-                jobTitle: jobData.jobTitle,
-                jobDescription: jobData.jobDescription,
-                department: jobData.department,
-                employmentType: jobData.employmentType,
-                location: jobData.location,
-                experienceLevel: jobData.experienceLevel,
-                recruiter: jobData.recruiter,
-                applicationDeadline: jobData.applicationDeadline,
-                status: jobData.status,
-                noOfPositions: jobData.noOfPositions,
-                urgency: jobData.urgency,
-                requiredSkills: jobData.requiredSkills,
-                minimumSalary: jobData.minimumSalary,
-                maximumSalary: jobData.maximumSalary,
-                currency: jobData.currency,
-                hiringManager: jobData.hiringManager,
-                postingDate: jobData.postingDate,
-                preferredQualifications: jobData.preferredQualifications
-            }
-        };
+        const context = {
+            requisitionNumber: jobData.requisitionNumber,
+            jobTitle: jobData.jobTitle,
+            jobDescription: jobData.jobDescription,
+            department: jobData.department,
+            employmentType: jobData.employmentType,
+            location: jobData.location,
+            experienceLevel: jobData.experienceLevel,
+            recruiter: jobData.recruiter,
+            applicationDeadline: jobData.applicationDeadline,
+            status: jobData.status,
+            noOfPositions: jobData.numberOfPositions,
+            urgency: jobData.urgency,
+            requiredSkills: jobData.requiredSkills,
+            minimumSalary: jobData.minimumSalary,
+            maximumSalary: jobData.maximumSalary,
+            currency: jobData.currency,
+            hiringManager: jobData.hiringManager,
+            postingDate: jobData.postingDate,
+            preferredQualifications: jobData.preferredQualifications
+          };
+      
+          
+          const stringifiedContext = Object.fromEntries(
+            Object.entries(context).map(([key, value]) => [key, value != null ? String(value) : ""])
+          );
+
+        const payload= {
+            "definitionId": "us10.44061ef2trial.jobrequisition1.jobRequisitionProcess",
+            context: stringifiedContext
+        }
 
         const bpaResponse = await axios.post(
             'https://spa-api-gateway-bpi-us-prod.cfapps.us10.hana.ondemand.com/workflow/rest/v1/workflow-instances',

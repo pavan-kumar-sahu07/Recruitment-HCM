@@ -31,7 +31,7 @@ export default (srv) => {
     validateJobRequisitionData(jobRequisitionData, req);
 
     //Sending Data To BPA
-    // triggerBpa(jobRequisitionData);
+    triggerBpa(jobRequisitionData);
     // job Application Validation 
 
 
@@ -60,6 +60,10 @@ export default (srv) => {
     console.log(jobRequisitionData);
 
     validateJobRequisitionData(jobRequisitionData,req);
+
+    //bpa apis
+    triggerBpa(jobRequisitionData);
+
 
     // job Application Validations 
     for(let jobapplication of jobRequisitionData.applications){
