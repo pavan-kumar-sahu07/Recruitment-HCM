@@ -9,8 +9,8 @@ export function validateJobRequisitionData(data, req) {
     const postingDate = new Date(data.postingDate);
     postingDate.setHours(0, 0, 0, 0);
 
-    if (postingDate < today) {
-      req.error(400, "Posting Date cannot be in the past.");
+    if (postingDate > today) {
+      req.error(400, "Posting Date cannot be in the Feature.");
     }
   }
 

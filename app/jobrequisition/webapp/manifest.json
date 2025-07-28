@@ -121,6 +121,16 @@
                     "type": "GridTable",
                     "enableExport": true
                   }
+                },
+                "@com.sap.vocabularies.UI.v1.SelectionFields": {
+                  "filterFields": {
+                    "filter1": {
+                      "label": "Deadline",
+                      "property": "applicationDeadline",
+                      "template": "jobrequisition.ext.fragment.Deadline",
+                      "required": false
+                    }
+                  }
                 }
               },
               "initialLoad": "Enabled"

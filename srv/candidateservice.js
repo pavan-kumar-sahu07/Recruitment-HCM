@@ -30,22 +30,4 @@ export default (srv) => {
     validateCandidateInsideExperience(c.workExperienceInside,req);
   });
 
-
-
-  function validateResumeIsPdf(req) {
-    const resumeBuffer = req.data.resume;
-
-    // if (!resumeBuffer) {
-    //   req.error(400, 'Resume file is missing.');
-    // }
-
-      const isPDF = resumeBuffer[0] === 0x25 &&
-                  resumeBuffer[1] === 0x50 &&
-                  resumeBuffer[2] === 0x44 &&
-                  resumeBuffer[3] === 0x46;
-
-    if (!isPDF) {
-      req.error(400, 'Uploaded file is not a valid PDF.');
-    }
-  }
 };

@@ -179,7 +179,7 @@ entity Candidate : managed {
         @mandatory
         lastName              : String(100)    @title: 'Last Name';
 
-        @mandatory
+       
         middleName            : String(100)    @title: 'Middle Name';
 
         @mandatory
@@ -189,7 +189,7 @@ entity Candidate : managed {
         @assert.pattern  : '^\\+?[0-9]{10,15}$'
         phone                 : String(20)     @title: 'Phone Number';
 
-        @mandatory
+       
         alternatePhone        : String(20)     @title: 'Alternate Phone';
 
         @mandatory

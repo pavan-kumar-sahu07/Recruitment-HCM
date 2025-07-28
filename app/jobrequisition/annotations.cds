@@ -155,20 +155,16 @@ annotate RequisitionService.JobApplication with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : coverLetter,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : currentStage,
-        },
-        {
-            $Type : 'UI.DataField',
             Value : jobRequisition_ID,
             Label : 'jobRequisition_ID',
         },
         {
             $Type : 'UI.DataField',
             Value : overallRating,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : coverLetter,
         },
         {
             $Type : 'UI.DataField',

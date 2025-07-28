@@ -60,67 +60,6 @@ export default async function triggerBpa(jobData) {
                 }
             }
         );
-
-
-
-        // const bpaResponse = await axios.post(
-        //     'https://workflow-us10.cfapps.us10.hana.ondemand.com/workflow-service/rest/v1/workflow-instances',
-        //     {
-        //         definitionId: "us10.5bd9c330trial.jobrequisitionapproval.jobRequisitionHandlingProcess",
-        //         context: {
-        //             requisitionNumber: "REQ-12345",
-        //             jobTitle: "Full Stack Developer",
-        //             jobDescription: "Develop and maintain web apps",
-        //             department: "IT",
-
-        //             employmentType: "Full-Time",
-
-        //             location: "Hyderabad",
-
-        //             experienceLevel: "Mid",
-
-        //             recruiter: "Anjali Reddy",
-
-        //             applicationDeadline: "2025-08-15",
-
-        //             status: "Pending",
-
-        //             noOfPositions: "2",
-
-        //             urgency: "High",
-
-        //             requiredSkills: "React, Node.js, MongoDB",
-
-        //             minimumSalary: "800000",
-
-        //             maximumSalary: "1200000",
-
-        //             currency: "INR",
-
-        //             hiringManager: "Rahul Sharma",
-
-        //             postingDate: "2025-07-26",
-
-        //             preferredQualifications: "MCA or B.Tech"
-
-        //         }
-
-        //     },
-
-        //     {
-
-        //         headers: {
-
-        //             Authorization: `Bearer ${accessToken}`,
-
-        //             'Content-Type': 'application/json'
-
-        //         }
-
-        //     }
-
-        // );
-
         console.log("Response Data", bpaResponse.data);
         return bpaResponse.data;
 
