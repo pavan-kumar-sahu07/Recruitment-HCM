@@ -225,7 +225,7 @@ entity Candidate : managed {
                 }
             ]
         }
-        source                : String(100); // Job Board, Referral, Direct, etc.
+        source                : String(100); 
 
         @title           : 'Status'
         @Common.ValueList: {
@@ -260,12 +260,7 @@ entity Candidate : managed {
                                     on certificates.candidate = $self;
         languages             : Composition of many CandidateLanguage
                                     on languages.candidate = $self;
-        comments              : Composition of many CandidateComment
-                                    on comments.candidate = $self;
-        tags                  : Composition of many CandidateTag
-                                    on tags.candidate = $self;
-        profileExtensions     : Composition of many CandidateProfileExtension
-                                    on profileExtensions.candidate = $self;
+       
 }
 
 
@@ -574,8 +569,7 @@ entity JobApplication : managed {
                                 on interviews.jobApplication = $self;
         offers            : Composition of many JobOffer
                                 on offers.jobApplication = $self;
-        snapshots         : Composition of many JobApplicationSnapshot
-                                on snapshots.jobApplication = $self;
+       
 }
 
 /**
@@ -583,6 +577,7 @@ entity JobApplication : managed {
  */
 entity JobApplicationInterview : managed {
     key ID                     : UUID;
+        @readonly
         jobInterviewNumber      : String(20)     @title: 'Offer Number';
         jobApplication         : Association to JobApplication;
          @mandatory
@@ -607,6 +602,7 @@ entity JobApplicationInterview : managed {
  */
 entity JobOffer : managed {
     key ID               : UUID;
+        @readonly
         offerNumber      : String(20)     @title: 'Offer Number';
         jobApplication   : Association to JobApplication;
          @mandatory
@@ -633,162 +629,5 @@ entity JobOffer : managed {
         rejectionReason  : String(255)    @title: 'Rejection Reason';
 }
 
-/**
- * Job Application Snapshot - Historical data capture
- */
-entity JobApplicationSnapshot : managed {
-    key ID             : UUID;
-        jobApplication : Association to JobApplication;
-        snapshotDate   : DateTime   @title: 'Snapshot Date';
-        snapshotType   : String(50) @title: 'Snapshot Type';
-
-        // Snapshot of candidate data at time of application
-        education      : Composition of many JobApplicationSnapshotEducation
-                             on education.snapshot = $self;
-        certificates   : Composition of many JobApplicationSnapshotCertificate
-                             on certificates.snapshot = $self;
-}
-
-/**
- * Job Application Snapshot - Education
- */
-entity JobApplicationSnapshotEducation : managed {
-    key ID             : UUID;
-        snapshot       : Association to JobApplicationSnapshot;
-        institution    : String(255)   @title: 'Institution';
-        degree         : String(100)   @title: 'Degree';
-        fieldOfStudy   : String(100)   @title: 'Field of Study';
-        graduationDate : Date          @title: 'Graduation Date';
-        gpa            : Decimal(3, 2) @title: 'GPA';
-}
-
-/**
- * Job Application Snapshot - Certificates
- */
-entity JobApplicationSnapshotCertificate : managed {
-    key ID                  : UUID;
-        snapshot            : Association to JobApplicationSnapshot;
-        certificateName     : String(255) @title: 'Certificate Name';
-        issuingOrganization : String(255) @title: 'Issuing Organization';
-        issueDate           : Date        @title: 'Issue Date';
-        expirationDate      : Date        @title: 'Expiration Date';
-}
 
 
-/**
- * Candidate Comments and Notes
- */
-entity CandidateComment : managed {
-    key ID          : UUID;
-        candidate   : Association to Candidate;
-        commentDate : DateTime    @title: 'Comment Date';
-        commentBy   : User        @title: 'Comment By';
-        commentType : String(50)  @title: 'Comment Type'; // General, Interview, Reference
-        comment     : LargeString @title: 'Comment';
-        isPrivate   : Boolean     @title: 'Private Comment';
-        visibility  : String(20)  @title: 'Visibility'; // Public, Team, Private
-}
-
-/**
- * Candidate Tags for categorization
- */
-entity CandidateTag : managed {
-    key ID          : UUID;
-        candidate   : Association to Candidate;
-        tagName     : String(100) @title: 'Tag Name';
-        tagCategory : String(50)  @title: 'Tag Category';
-        tagValue    : String(255) @title: 'Tag Value';
-        addedBy     : User        @title: 'Added By';
-        addedDate   : DateTime    @title: 'Added Date';
-}
-
-/**
- * Candidate Profile Extensions for custom fields
- */
-entity CandidateProfileExtension : managed {
-    key ID            : UUID;
-        candidate     : Association to Candidate;
-        fieldName     : String(100) @title: 'Field Name';
-        fieldType     : String(20)  @title: 'Field Type';
-        fieldValue    : String(500) @title: 'Field Value';
-        fieldCategory : String(50)  @title: 'Field Category';
-        isRequired    : Boolean     @title: 'Required Field';
-        displayOrder  : Integer     @title: 'Display Order';
-}
-
-/**
- * Candidate Light - Simplified candidate view for performance
- */
-entity CandidateLight {
-    key ID               : UUID;
-        candidateNumber  : String(20)  @title: 'Candidate Number';
-        fullName         : String(255) @title: 'Full Name';
-        email            : String(255) @title: 'Email';
-        phone            : String(20)  @title: 'Phone';
-        status           : String(20)  @title: 'Status';
-        source           : String(100) @title: 'Source';
-        applicationCount : Integer     @title: 'Application Count';
-        lastActivity     : DateTime    @title: 'Last Activity';
-}
-
-// ============================================================================
-// VIEWS AND PROJECTIONS
-// ============================================================================
-
-/**
- * Active Recruitment Pipeline View
- */
-view ActiveRecruitmentPipeline as
-    select from JobRequisition {
-        ID,
-        requisitionNumber,
-        jobTitle,
-        department,
-        status,
-        numberOfPositions,
-        postingDate,
-        applicationDeadline,
-        hiringManager,
-        recruiter,
-        applications.ID as applicationCount : Integer
-    }
-    where
-        status in (
-            'Open', 'On Hold'
-        );
-
-/**
- * Candidate Application Summary View
- */
-view CandidateApplicationSummary as
-    select from Candidate {
-        ID,
-        candidateNumber,
-        firstName,
-        lastName,
-        email,
-        status,
-        applications.ID                       as totalApplications : Integer,
-        applications[status = 'Interview'].ID as interviewStage    : Integer,
-        applications[status = 'Offer'].ID     as offerStage        : Integer
-    };
-
-/**
- * Interview Schedule View
- */
-view InterviewSchedule as
-    select from JobApplicationInterview {
-        ID,
-        jobApplication.candidate.firstName,
-        jobApplication.candidate.lastName,
-        jobApplication.jobRequisition.jobTitle,
-        interviewType,
-        scheduledDate,
-        interviewer,
-        status,
-        location,
-        meetingLink
-    }
-    where
-            status        =  'Scheduled'
-        and scheduledDate >= $now;

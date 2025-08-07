@@ -1,8 +1,9 @@
 export function validateCandidateData(c, req) {
 
+  const mimeType = req.headers['content-type'];
+
+
   const phoneRegex = /^[0-9]{10}$/;
-
-
   if (!c.phone || !phoneRegex.test(c.phone)) {
     req.error(400, "Enter a valid phone number (10 digits)");
   }

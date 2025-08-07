@@ -201,6 +201,12 @@
                     "type": "GridTable"
                   }
                 }
+              },
+              "content": {
+                "header": {
+                  "anchorBarVisible": true,
+                  "visible": true
+                }
               }
             }
           }
@@ -211,5 +217,9 @@
   "sap.fiori": {
     "registrationIds": [],
     "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "jobrequisition"
   }
 }

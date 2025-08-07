@@ -1,0 +1,23 @@
+{
+    "requires": {
+      "auth": {
+        "mock_users": {
+          "admin": {
+            "ID": "admin",
+            "roles": ["Admin"],
+            "attributes": {
+              "country": ["IN"]
+            }
+          },
+          "user": {
+            "ID": "user",
+            "roles": ["User"],
+            "attributes": {
+              "country": ["US"]
+            }
+          }
+        }
+      }
+    }
+  }
+  

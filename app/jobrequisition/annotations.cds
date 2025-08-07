@@ -37,7 +37,7 @@ annotate RequisitionService.JobRequisition with @(
     UI.Facets : [
         {
             $Type : 'UI.ReferenceFacet',
-            Label : 'General Information',
+            Label : '{i18n>JobrequistionsDetails}',
             ID : 'GeneralInformation',
             Target : '@UI.FieldGroup#GeneralInformation',
         },
@@ -126,7 +126,7 @@ annotate RequisitionService.JobRequisition with @(
         ],
     },
     UI.HeaderInfo : {
-        TypeNamePlural : 'Total Jobs',
+        TypeNamePlural : 'Job Requistions',
         TypeName : '',
         TypeImageUrl : 'sap-icon://business-card',
     },
@@ -146,7 +146,8 @@ annotate RequisitionService.JobApplication with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : applicationDate,
+            Value : jobRequisition_ID,
+            Label : 'jobRequisition_ID',
         },
         {
             $Type : 'UI.DataField',
@@ -155,20 +156,7 @@ annotate RequisitionService.JobApplication with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : jobRequisition_ID,
-            Label : 'jobRequisition_ID',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : overallRating,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : coverLetter,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : portfolioURL,
+            Value : applicationDate,
         },
         {
             $Type : 'UI.DataField',
@@ -176,7 +164,15 @@ annotate RequisitionService.JobApplication with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : resumeURL,
+            Value : overallRating,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : status,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : coverLetter,
         },
         {
             $Type : 'UI.DataField',
@@ -184,7 +180,11 @@ annotate RequisitionService.JobApplication with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : status,
+            Value : portfolioURL,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : resumeURL,
         },
     ],
     UI.Facets : [
@@ -254,13 +254,22 @@ annotate RequisitionService.JobApplication with @(
             },
         ],
     },
+    UI.HeaderInfo : {
+        Title : {
+            $Type : 'UI.DataField',
+            Value : jobRequisition.jobTitle,
+        },
+        TypeName : '',
+        TypeNamePlural : '',
+    },
 );
 
 annotate RequisitionService.JobApplicationInterview with @(
     UI.LineItem #JobInterviews : [
         {
             $Type : 'UI.DataField',
-            Value : duration,
+            Value : jobApplication_ID,
+            Label : 'jobApplication_ID',
         },
         {
             $Type : 'UI.DataField',
@@ -269,11 +278,7 @@ annotate RequisitionService.JobApplicationInterview with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : feedback,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : interviewer,
+            Value : duration,
         },
         {
             $Type : 'UI.DataField',
@@ -281,24 +286,15 @@ annotate RequisitionService.JobApplicationInterview with @(
         },
         {
             $Type : 'UI.DataField',
+            Value : interviewer,
+        },
+        {
+            $Type : 'UI.DataField',
             Value : interviewType,
         },
         {
             $Type : 'UI.DataField',
-            Value : jobApplication_ID,
-            Label : 'jobApplication_ID',
-        },
-        {
-            $Type : 'UI.DataField',
             Value : location,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : meetingLink,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : notes,
         },
         {
             $Type : 'UI.DataField',
@@ -312,11 +308,36 @@ annotate RequisitionService.JobApplicationInterview with @(
             $Type : 'UI.DataField',
             Value : status,
         },
+        {
+            $Type : 'UI.DataField',
+            Value : feedback,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : meetingLink,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : notes,
+        },
     ]
 );
 
 annotate RequisitionService.JobOffer with @(
     UI.LineItem #JobOffers : [
+        {
+            $Type : 'UI.DataField',
+            Value : jobApplication_ID,
+            Label : 'jobApplication_ID',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : offerNumber,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : jobTitle,
+        },
         {
             $Type : 'UI.DataField',
             Value : acceptanceDate,
@@ -347,20 +368,7 @@ annotate RequisitionService.JobOffer with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : jobApplication_ID,
-            Label : 'jobApplication_ID',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : jobTitle,
-        },
-        {
-            $Type : 'UI.DataField',
             Value : offerDate,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : offerNumber,
         },
         {
             $Type : 'UI.DataField',
@@ -377,10 +385,6 @@ annotate RequisitionService.JobOffer with @(
         {
             $Type : 'UI.DataField',
             Value : status,
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : terms,
         },
         {
             $Type : 'UI.DataField',

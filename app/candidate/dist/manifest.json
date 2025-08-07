@@ -130,16 +130,6 @@
                     "enableExport": true,
                     "selectAll": true
                   }
-                },
-                "@com.sap.vocabularies.UI.v1.SelectionFields": {
-                  "filterFields": {
-                    "statusfilter": {
-                      "label": "Filter by Status",
-                      "property": "status",
-                      "template": "candidate.ext.fragment.Statusfilter",
-                      "required": false
-                    }
-                  }
                 }
               },
               "initialLoad": "Enabled"
@@ -158,18 +148,6 @@
                 "header": {
                   "anchorBarVisible": true,
                   "visible": true
-                },
-                "body": {
-                  "sections": {
-                    "Candidateresume": {
-                      "template": "candidate.ext.fragment.Candidateresume",
-                      "position": {
-                        "placement": "After",
-                        "anchor": "Resume"
-                      },
-                      "title": "Resume Upload"
-                    }
-                  }
                 }
               },
               "controlConfiguration": {
@@ -219,5 +197,9 @@
   "sap.fiori": {
     "registrationIds": [],
     "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "candidate"
   }
 }

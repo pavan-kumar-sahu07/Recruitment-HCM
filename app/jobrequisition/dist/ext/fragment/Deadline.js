@@ -1,0 +1,2 @@
+sap.ui.define(["sap/ui/model/Filter","sap/ui/model/FilterOperator"],function(e,a){"use strict";return{filterItems:function(t){switch(t){case"0":return new e({path:"applicationDeadline",operator:a.LT,value1:100});case"1":return new e({filters:[new e({path:"applicationDeadline",operator:a.GT,value1:100}),new e({path:"applicationDeadline",operator:a.LT,value1:500})],and:true});case"2":return new e({path:"applicationDeadline",operator:a.GT,value1:500})}}}});
+//# sourceMappingURL=Deadline.js.map
