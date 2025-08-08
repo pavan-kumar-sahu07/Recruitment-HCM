@@ -60,9 +60,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "jobrequisition.i18n.i18n",
-          "supportedLocales": ["en"],
-          "fallbackLocale": "en"
+          "bundleName": "jobrequisition.i18n.i18n"
         }
       },
       "": {
@@ -72,14 +70,6 @@
           "operationMode": "Server",
           "autoExpandSelect": true,
           "earlyRequests": true
-        }
-      },
-      "@i18n": {
-        "type": "sap.ui.model.resource.ResourceModel",
-        "uri": "i18n/i18n.properties",
-        "settings": {
-          "supportedLocales": ["en"],
-          "fallbackLocale": "en"
         }
       }
     },
