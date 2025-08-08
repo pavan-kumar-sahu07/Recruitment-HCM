@@ -67,8 +67,9 @@
         "settings": {
           "bundleName": "jobrequisition.i18n.i18n",
           "supportedLocales": [
-            ""
-          ]
+            "en"
+          ],
+          "fallbackLocale": "en"
         }
       },
       "": {
@@ -85,8 +86,9 @@
         "uri": "i18n/i18n.properties",
         "settings": {
           "supportedLocales": [
-            ""
-          ]
+            "en"
+          ],
+          "fallbackLocale": "en"
         }
       }
     },

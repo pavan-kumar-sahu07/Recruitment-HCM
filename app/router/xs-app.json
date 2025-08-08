@@ -1,11 +1,32 @@
 {
+  "welcomeFile": "/candidate",
+  "authenticationMethod": "route",
   "routes": [
     {
-      "source": "^/(.*)$",
+      "source": "^/odata/(.*)$",
       "target": "$1",
       "destination": "srv-api",
+      "authenticationType": "xsuaa",
       "csrfProtection": true
+    },
+    {
+      "source": "^/srv-api/(.*)$",
+      "target": "$1",
+      "destination": "srv-api",
+      "authenticationType": "xsuaa",
+      "csrfProtection": true
+    },
+    {
+      "source": "^/test-resources/(.*)$",
+      "target": "/test-resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa"
     }
-  ],
-  "welcomeFile": "/candidate"
+  ]
 }
