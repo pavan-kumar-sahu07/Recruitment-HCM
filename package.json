@@ -12,12 +12,10 @@
     "axios": "^1.11.0",
     "express": "^4",
     "@cap-js/change-tracking": "^1.0.8",
-
     "@sap/cds": "^9",
     "@sap/hana-client": "^2.25.29",
     "xlsx": "^0.18.5",
     "@sap/cds-dk": ">=8"
-
   },
   "engines": {
     "node": ">=20"

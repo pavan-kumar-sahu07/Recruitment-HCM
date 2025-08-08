@@ -7,7 +7,7 @@
       "target": "$1",
       "authenticationType": "xsuaa",
       "destination": "HCM-Recruitment-destination-service",
-      "csrfProtection": true    
+      "csrfProtection": true
     },
     {
       "source": "^/test-resources/(.*)$",

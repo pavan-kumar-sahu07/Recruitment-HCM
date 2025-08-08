@@ -2,24 +2,54 @@
   "xsappname": "HCM-Recruitment",
   "scopes": [
     {
-      "name": "$XSAPPNAME.User",
-      "description": "Basic user access"
+      "name": "$XSAPPNAME.Viewer",
+      "description": "View candidate data"
     },
     {
-      "name": "$XSAPPNAME.Admin",
-      "description": "Administrator access"
+      "name": "$XSAPPNAME.Editor",
+      "description": "Create, edit and delete candidate data"
     }
   ],
   "role-templates": [
     {
-      "name": "User",
-      "description": "Default user role",
-      "scope-references": ["$XSAPPNAME.User"]
+      "name": "Viewer",
+      "description": "Read-only access",
+      "scope-references": [
+        "$XSAPPNAME.Viewer"
+      ]
     },
     {
-      "name": "Admin",
-      "description": "Admin role with full access",
-      "scope-references": ["$XSAPPNAME.Admin"]
+      "name": "Editor",
+      "description": "Full access including edit",
+      "scope-references": [
+        "$XSAPPNAME.Editor"
+      ]
     }
-  ]
+  ],
+  "role-collections": [
+    {
+      "name": "CandidateViewer",
+      "description": "Role collection for candidate viewers",
+      "role-template-references": [
+        "Viewer"
+      ]
+    },
+    {
+      "name": "CandidateEditor",
+      "description": "Role collection for candidate editors",
+      "role-template-references": [
+        "Editor"
+      ]
+    }
+  ],
+  "authorities": ["$ACCEPT_GRANTED_AUTHORITIES"],
+  "oauth2-configuration": {
+    "token-validity": 900,
+    "redirect-uris": [
+      "https://yourapp.cfapps.your-region.hana.ondemand.com",
+      "https://yourapp.yourdomain.com/logout"
+    ],
+    "credential-types": ["binding-secret", "x509"]
+  },
+  "xsenableasyncservice": true
 }
